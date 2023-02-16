@@ -1,0 +1,40 @@
+.container {
+  width: 100%!important;
+  height: fit-content!important;
+  position: relative!important;
+}
+
+.container:hover .controls {
+  opacity: 1!important;
+  visibility: visible!important;
+}
+
+.controls {
+  position: absolute!important;
+  opacity: 0!important;
+  transition: 0.2s all ease-in-out!important;
+  visibility: hidden!important;
+  transform: translate(-100%, -50%)!important;
+  top: 50%!important;
+  height: 100%!important;
+  justify-content: center!important;
+  align-items: center!important;
+  padding: 0px 8px!important;
+  left: 0px!important;
+}
+
+.iconButton {
+  width: 32px!important;
+  height: 32px!important;
+  padding: 0px!important;
+  min-width: 0!important;
+  background: none!important;
+}
+
+.iconButton:hover svg {
+  fill: rgb(0, 84, 117)!important;
+}
+
+.iconButton svg {
+  fill: black!important;
+}

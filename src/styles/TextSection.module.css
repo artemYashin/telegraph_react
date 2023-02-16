@@ -1,0 +1,50 @@
+
+.body > div {
+  border: none!important;
+  background: none!important;
+  font-weight: 400!important;
+  padding: 0px!important;
+  font-size: 18px!important;
+}
+
+.body strong {
+  font-weight: 600!important;
+}
+
+.body em {
+  font-style: italic!important;
+}
+
+.body > div > div {
+  padding: 0px!important;
+}
+
+.body blockquote {
+  margin-bottom: 0px!important;
+  margin-top: 0px!important;
+}
+
+.body p, .body h1, .body h2 {
+  margin-bottom: 8px!important;
+  margin-top: 8px!important;
+}
+
+.body > div > div::before {
+      position: absolute!important;
+      font-style: initial!important;
+      font-size: 18px!important;
+      font-weight: 400!important;
+      color: #ddd!important;
+      font-family: 'Rubik'!important;
+      left: 0px!important;
+      right: 0px!important;
+}
+
+.body fieldset {
+  border: none!important;
+}
+
+.body-input {
+  padding: 0px!important;
+  border: 0px!important;
+}

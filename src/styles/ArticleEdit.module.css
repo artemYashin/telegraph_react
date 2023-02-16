@@ -1,0 +1,50 @@
+.container {
+  margin: auto!important;
+  padding: 90px 0px!important;
+  width: 945px!important;
+  align-items: flex-start!important;
+  justify-content: center!important;
+}
+
+.title > div {
+  border: none!important;
+  background: none!important;
+  font-weight: 500!important;
+  padding: 0px!important;
+  font-size: 36px!important;
+}
+
+.buttons {
+  margin-bottom: 60px!important;
+}
+
+.button {
+  border: none!important;
+  box-sizing: border-box!important;
+  padding: 0px!important;
+  text-transform: none!important;
+  color: black!important;
+  background: none!important;
+  font-size: 16px!important;
+  font-weight: 400!important;
+  padding: 8px 32px!important;
+  box-shadow: 0px 0px 0px 2px #ddd!important;
+  flex: 1!important;
+}
+
+.button:hover {
+  background: #ddd!important;
+}
+
+.title {
+  margin-bottom: 40px!important;
+}
+
+.title fieldset {
+  border: none!important;
+}
+
+.title-input {
+  padding: 0px!important;
+  border: 0px!important;
+}

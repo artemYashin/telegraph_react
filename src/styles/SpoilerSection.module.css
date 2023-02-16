@@ -1,0 +1,60 @@
+.container {
+  width: 100%!important;
+  height: fit-content!important;
+}
+.accordion {
+  border: none!important;
+  box-shadow: none!important;
+  border-radius: 0px!important;
+  padding: 0px!important;
+  margin: 8px 0px!important;
+}
+.accordion > div {
+  min-height: 0px!important;
+  padding: 0px!important;
+}
+.accordion_summary {
+  margin: 0px!important;
+  border-top: 1px solid #ddd!important;
+  border-bottom: 1px solid #ddd!important;
+  padding: 0px!important;
+}
+.accordion_summary > div{
+  margin: 0px!important;
+  display: flex!important;
+  flex-direction: row!important;
+  justify-content: space-between!important;
+  width: 100%!important;
+  padding: 16px 0px!important;
+}
+.accordion_details {
+  padding: 16px 0px!important;
+  padding-top: 48px!important;
+}
+.title {
+  border: none!important;
+  padding: 16px 0px!important;
+  border-top: 1px solid #ddd!important;
+  border-bottom: 1px solid #ddd!important;
+}
+.title_input {
+  border: none!important;
+  padding: 0px!important;
+  font-size: 18px!important;
+}
+.title fieldset {
+  border: none!important
+}
+
+.body {
+  border: none!important;
+  padding: 16px 0px!important;
+}
+.body_input {
+  border: none!important;
+  padding: 0px!important;
+  font-size: 18px!important;
+}
+.body fieldset {
+  border: none!important
+}

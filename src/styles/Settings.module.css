@@ -1,0 +1,131 @@
+.container {
+  width: 100%!important;
+  padding: 8px!important;
+  box-sizing: border-box!important;
+  justify-content: center!important;
+  align-items: center!important;
+  min-height: 100%!important;
+}
+
+.homeButton {
+  color: white!important;
+  background: black!important;
+  padding: 8px!important;
+  width: fit-content!important;
+  margin-bottom: 16px!important;
+  min-width: 0px!important;
+}
+
+.homeButton:hover {
+  background: #444!important;
+}
+
+.homeButton svg {
+  fill: white!important;
+}
+
+.container_inner {
+  width: 360px!important;
+  min-width: 360px!important;
+  max-width: 360px!important;
+}
+
+.title {
+  background: black!important;
+  color: white!important;
+  font-family: 'Rubik'!important;
+  font-size: 26px!important;
+  font-weight: 600!important;
+  width: 100%!important;
+  min-width: 100%!important;
+  text-align: center!important;
+  line-height: 85px!important;
+  border-radius: 5px!important;
+  box-sizing: border-box!important;
+  margin-bottom: 50px!important;
+}
+
+.fields_container {
+  gap: 40px!important;
+}
+
+.password_button {
+  color: black!important;
+  font-family: 'Rubik'!important;
+  font-weight: 400!important;
+  line-height: 50px!important;
+  flex: 1;
+  padding: 0px!important;
+  text-transform: none!important;
+  border-radius: 5px!important;
+  transition: 0.2s ease!important;
+  background: #ccc!important;
+}
+
+.password_button:hover {
+  background: #aaa!important;
+}
+.password_button_selected{
+  color: white!important;
+  background: black!important;
+}
+.password_button_selected:hover {
+  background: black!important;
+}
+
+.input_container {
+  gap: 16px!important;
+}
+
+.saveButton {
+  background: white!important;
+  text-transform: none!important;
+  border: none!important;
+  font-family: 'Rubik'!important;
+  font-weight: 400!important;
+  line-height: 50px!important;
+  font-size: 14px!important;
+  padding: 0px!important;
+  background: #d8d8d8!important;
+  color: black!important;
+}
+
+.saveButton:hover {
+  background: #eee!important;
+}
+
+.preview {
+  max-height: 146px!important;
+  width: fit-content!important;
+  max-width: 100%!important;
+  object-fit: contain!important;
+}
+
+.label {
+  font-size: 16px!important;
+}
+
+.input {
+  font-size: 18px!important;
+  text-align: center!important;
+  outline-width: 4px!important;
+}
+
+.input::placeholder {
+  transform: translateY(7px)!important;
+  width: 100%;
+  font-size: 24px;
+  text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 24px!important;
+  }
+
+  .container_inner {
+    width: 100%!important;
+    min-width: 100%!important;
+    max-width: 100%!important;
+  }
+}

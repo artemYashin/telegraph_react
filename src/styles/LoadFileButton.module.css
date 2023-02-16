@@ -1,0 +1,28 @@
+.input {
+  display: none!important;
+}
+
+.button{
+  text-transform: none!important;
+  background: white!important;
+  font-family: 'Rubik'!important;
+  color: black!important;
+  box-shadow: 0px 0px 0px 2px #ddd!important;
+  padding: 0px 16px!important;
+  font-size: 15px!important;
+  font-weight: 400!important;
+  display: flex!important;
+  flex-direction: row!important;
+  gap: 4px!important;
+  align-items: center!important;
+  justify-content: center!important;
+  line-height: 40px!important;
+}
+
+.button:hover{
+  background: #eee!important;
+}
+
+.button svg {
+  fill: black!important;
+}

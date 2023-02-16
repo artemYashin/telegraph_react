@@ -1,0 +1,75 @@
+.link {
+  color: black;
+  font-weight: 400;
+  line-height: 26px;
+  cursor: pointer;
+}
+@media screen and (min-width: 768px) {
+.link:hover {
+  color: rgb(57, 96, 223);
+}
+}
+
+.edit {
+  cursor: pointer;
+}
+
+.item {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  margin-bottom: 16px;
+  gap: 4px;
+  z-index: 1;
+}
+
+.item .buttons {
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  position: absolute;
+  left: 0px;
+  transform: translateX(-100%);
+  padding-right: 8px;
+  z-index: -1;
+}
+
+@media screen and (max-width: 768px) {
+  .item .buttons {
+    visibility: visible;
+    pointer-events: all;
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    transform: translateY(-100%);
+    padding-right: 8px;
+    z-index: -1;
+  }
+  .item {
+    margin-bottom: 32px;
+  }
+}
+
+.item:hover .buttons {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.item.selected .buttons {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.item.selected .link {
+  font-weight: 500;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
