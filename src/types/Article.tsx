@@ -1,13 +1,13 @@
 export type Article = {
   id: number,
-  title: string,
-  body: Array<ArticleSection>,
+  title?: string,
+  body: ArticleSection[],
   sort: number
 };
 
 export type ArticleTitle = {
   id: number,
-  title: String,
+  title?: string | undefined,
   sort: number,
 };
 

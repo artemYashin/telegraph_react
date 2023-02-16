@@ -7,6 +7,13 @@ import BorderHorizontalIcon from '@mui/icons-material/BorderHorizontal';
 import QuizIcon from '@mui/icons-material/Quiz';
 import Styles from '@/styles/ArticleSection.module.css';
 
+export enum SectionType {
+  text = 'text',
+  spoiler = 'spoiler',
+  divider = 'divider',
+  image = 'image',
+}
+
 const articleSection = (Component: React.FC) => function ArticleSection(props: any) {
   const onDeleteHandler = () => {
     if (props?.deleteHandler) {
@@ -14,27 +21,10 @@ const articleSection = (Component: React.FC) => function ArticleSection(props: a
     }
   };
 
-  const onAddTextHandler = React.useCallback(() => {
-    if (props?.addTextHandler) {
-      props.addTextHandler();
-    }
-  }, []);
-
-  const onAddDividerHandler = () => {
-    if (props?.addDividerHandler) {
-      props.addDividerHandler();
-    }
-  };
-
-  const onAddSpoilerHandler = () => {
-    if (props?.addSpoilerHandler) {
-      props.addSpoilerHandler();
-    }
-  };
-
-  const onAddImageHandler = () => {
-    if (props?.addImageHandler) {
-      props.addImageHandler();
+  const onAddHandler = (type: SectionType) => {
+    if (props?.addHandler) {
+      console.log(type);
+      props.addHandler(type);
     }
   };
 
@@ -48,28 +38,28 @@ const articleSection = (Component: React.FC) => function ArticleSection(props: a
               <Button
                 disableRipple
                 className={Styles.iconButton}
-                onClick={onAddTextHandler}
+                onClick={() => { onAddHandler(SectionType.text); }}
               >
                 <BorderInnerIcon sx={{ width: '24px' }} />
               </Button>
               <Button
                 disableRipple
                 className={Styles.iconButton}
-                onClick={onAddSpoilerHandler}
+                onClick={() => { onAddHandler(SectionType.spoiler); }}
               >
                 <QuizIcon sx={{ width: '24px' }} />
               </Button>
               <Button
                 disableRipple
                 className={Styles.iconButton}
-                onClick={onAddDividerHandler}
+                onClick={() => { onAddHandler(SectionType.divider); }}
               >
                 <BorderHorizontalIcon sx={{ width: '24px' }} />
               </Button>
               <Button
                 disableRipple
                 className={Styles.iconButton}
-                onClick={onAddImageHandler}
+                onClick={() => { onAddHandler(SectionType.image); }}
               >
                 <ImageIcon sx={{ width: '24px' }} />
               </Button>

@@ -31,6 +31,9 @@ const TextSection = ArticleSection((props?: TextSectionProps) => {
           toolbar: [
             ['bold', 'italic', 'link', { header: '1' }, { header: '2' }, 'blockquote', 'code-block'],
           ],
+          clipboard: {
+            matchVisual: false,
+          },
         }}
         className={Styles.body}
         theme="bubble"

@@ -27,5 +27,5 @@ export default function handler(
     mkdirSync('public/upload');
   }
   writeFileSync(`public/upload/${fileName}`, req.read());
-  res.status(200).json({ src: `/upload/${fileName}` });
+  res.status(200).json({ src: `/api/public/upload/${fileName}` });
 }

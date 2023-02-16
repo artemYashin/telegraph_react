@@ -13,7 +13,7 @@ export default async function handler(
   await ArticlesTable.createTable();
   await UsersTable.changePassword('admin', 'admin');
   await SettingsTable.changeSetting({
-    name: 'user_password_token',
+    name: 'user_password_state',
     value: 'yes'
   });
   const { password } = req.body;

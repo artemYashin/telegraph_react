@@ -3,6 +3,8 @@
 }
 .rootContainer {
   padding-top: 64px;
+  padding-bottom: 64px;
+  box-sizing: border-box;
 }
 @media screen and (max-width: 1024px) {
   .container {

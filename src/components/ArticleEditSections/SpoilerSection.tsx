@@ -6,6 +6,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import Styles from '@/styles/SpoilerSection.module.css';
 import ArticleSection from './ArticleSection';
+import TextSection from './TextSection';
 
 export interface SpoilerSectionProps {
   content?: {
@@ -74,7 +75,7 @@ const SpoilerSection = ArticleSection((props?: SpoilerSectionProps) => {
               />
             </div>
             <div className={Styles.container}>
-              <TextField
+              <TextSection
                 spellCheck={false}
                 fullWidth
                 placeholder="Текст контейнера"

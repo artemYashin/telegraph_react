@@ -4,7 +4,8 @@
   background: none!important;
   font-weight: 400!important;
   padding: 0px!important;
-  font-size: 18px!important;
+  font-size: 17px!important;
+  font-family: 'Rubik'!important
 }
 
 .body strong {
@@ -22,22 +23,37 @@
 .body blockquote {
   margin-bottom: 0px!important;
   margin-top: 0px!important;
+  border-left: 2px solid black!important;
+  color: #7f7f7f!important;
+  padding-left: 32px!important;
 }
 
-.body p, .body h1, .body h2 {
-  margin-bottom: 8px!important;
-  margin-top: 8px!important;
+.body :not(blockquote) + blockquote {
+  margin-top: 16px!important;
+}
+
+.body blockquote + :not(blockquote) {
+  margin-top: 16px!important;
+}
+
+.body p {
+  line-height: 22px;
+}
+
+.body {
+  font-family: 'Rubik'!important;
 }
 
 .body > div > div::before {
-      position: absolute!important;
-      font-style: initial!important;
-      font-size: 18px!important;
-      font-weight: 400!important;
-      color: #ddd!important;
-      font-family: 'Rubik'!important;
-      left: 0px!important;
-      right: 0px!important;
+  position: absolute!important;
+  font-style: initial!important;
+  font-size: 16px!important;
+  font-weight: 400!important;
+  color: #ddd!important;
+  font-family: 'Rubik'!important;
+  left: 0px!important;
+  right: 0px!important;
+  top: 0px!important;
 }
 
 .body fieldset {
