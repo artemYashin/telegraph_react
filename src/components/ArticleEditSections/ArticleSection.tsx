@@ -14,6 +14,11 @@ export enum SectionType {
   image = 'image',
 }
 
+export enum ButtonsPosition {
+  LEFT = 'left',
+  RIGHT = 'right',
+}
+
 const articleSection = (Component: React.FC) => function ArticleSection(props: any) {
   const onDeleteHandler = () => {
     if (props?.deleteHandler) {
@@ -23,7 +28,6 @@ const articleSection = (Component: React.FC) => function ArticleSection(props: a
 
   const onAddHandler = (type: SectionType) => {
     if (props?.addHandler) {
-      console.log(type);
       props.addHandler(type);
     }
   };
@@ -34,7 +38,7 @@ const articleSection = (Component: React.FC) => function ArticleSection(props: a
       { props.view === 'detail' ? (<Component {...props} />)
         : (
           <>
-            <Stack direction="row" className={Styles.controls}>
+            <Stack direction="row" className={`${Styles.controls} ${props?.buttonsPosition === ButtonsPosition.RIGHT ? Styles.controls_right : null}`}>
               <Button
                 disableRipple
                 className={Styles.iconButton}

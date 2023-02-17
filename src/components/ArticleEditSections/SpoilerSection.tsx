@@ -5,33 +5,40 @@ import { useState } from 'react';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import Styles from '@/styles/SpoilerSection.module.css';
-import ArticleSection from './ArticleSection';
-import TextSection from './TextSection';
+import ArticleSectionWrapper, { ButtonsPosition } from './ArticleSection';
+// eslint-disable-next-line import/no-cycle
+import ArticleSections from '../ArticleSections';
+import { ArticleSection, ArticleSectionsView } from '@/types/Article';
 
 export interface SpoilerSectionProps {
   content?: {
     title?: string;
-    body?: string;
+    body?: ArticleSection[];
   },
   view?: string;
   addFormCollector?: (content: object) => void
 }
 
-const SpoilerSection = ArticleSection((props?: SpoilerSectionProps) => {
-  const [content, setContent] = useState({ title: props?.content?.title || '', body: props?.content?.body || '' });
-
+const SpoilerSection = ArticleSectionWrapper((props?: SpoilerSectionProps) => {
+  const [content, setContent] = useState({ title: props?.content?.title || '', body: props?.content?.body || undefined });
   const [expanded, setExpanded] = useState(false);
+  let bodyCollector: any;
+
+  const setBodyCollector = (callback: Promise<string>): void => {
+    bodyCollector = callback;
+  };
 
   const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setContent({ ...content, title: event.target.value });
   };
 
-  const onBodyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setContent({ ...content, body: event.target.value });
-  };
-
   if (props?.addFormCollector) {
-    props.addFormCollector(() => (content));
+    props.addFormCollector(async () => (new Promise((resolve) => {
+      bodyCollector().then((bodyContent: ArticleSection[]) => {
+        setContent({ ...content, body: bodyContent });
+        resolve({ ...content, body: bodyContent });
+      });
+    })));
   }
 
   return (
@@ -52,13 +59,13 @@ const SpoilerSection = ArticleSection((props?: SpoilerSectionProps) => {
               { expanded ? <RemoveCircleIcon /> : <AddCircleIcon /> }
             </AccordionSummary>
             <AccordionDetails className={Styles.accordion_details}>
-              {content.body}
+              <ArticleSections body={content?.body} view={ArticleSectionsView.DETAIL} />
             </AccordionDetails>
           </Accordion>
         )
         : (
           <div
-            className={Styles.container}
+            className={Styles.root_container}
             style={{
               border: '1px solid #ddd', padding: '16px 40px', borderRadius: 8, boxSizing: 'border-box',
             }}
@@ -74,16 +81,11 @@ const SpoilerSection = ArticleSection((props?: SpoilerSectionProps) => {
                 inputProps={{ className: Styles.title_input }}
               />
             </div>
-            <div className={Styles.container}>
-              <TextSection
-                spellCheck={false}
-                fullWidth
-                placeholder="Текст контейнера"
-                className={Styles.body}
-                inputProps={{ className: Styles.body_input }}
-                onChange={onBodyChange}
-                value={content.body}
-                multiline
+            <div className={`${Styles.container} ${Styles.accordion_details}`}>
+              <ArticleSections
+                body={content?.body}
+                bodyCollector={setBodyCollector}
+                buttonsPosition={ButtonsPosition.RIGHT}
               />
             </div>
           </div>

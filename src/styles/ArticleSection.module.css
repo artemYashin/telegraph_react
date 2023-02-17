@@ -1,10 +1,11 @@
 .container {
   width: 100%!important;
+  max-width: 100%!important;
   height: fit-content!important;
   position: relative!important;
 }
 
-.container:hover .controls {
+.container:hover > .controls {
   opacity: 1!important;
   visibility: visible!important;
 }
@@ -19,8 +20,18 @@
   height: 100%!important;
   justify-content: center!important;
   align-items: center!important;
-  padding: 0px 8px!important;
-  left: 0px!important;
+  padding: 4px 12px!important;
+  left: -16px!important;
+  background: rgba(0,0,0,0.8)!important;
+  border-radius: 8px!important;
+  height: fit-content!important;
+  box-sizing: border-box!important;
+}
+
+.controls_right {
+  transform: translate(100%, -50%)!important;
+  left: unset!important;
+  right: -16px!important;
 }
 
 .iconButton {
@@ -32,9 +43,9 @@
 }
 
 .iconButton:hover svg {
-  fill: rgb(0, 84, 117)!important;
+  fill: rgb(32, 166, 219)!important;
 }
 
 .iconButton svg {
-  fill: black!important;
+  fill: white!important;
 }

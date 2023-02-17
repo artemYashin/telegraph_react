@@ -1,7 +1,7 @@
 import { OkPacket } from 'mysql';
+import utf8 from 'utf8';
 import dbQuery from '@/Database';
 import { Article } from '@/types/Article';
-import utf8 from 'utf8';
 
 export interface ArticleOrder {
   id: number;
@@ -52,14 +52,15 @@ export default class ArticlesTable {
   }
 
   static async updateArticle(id: number, title: string, body: string) {
-    if (title.trim() === '') {
-      title = 'Безымянная Статья';
-    }  
-    // let newBody = body.replaceAll('\\n', '\\\\n');
-    // newBody = btoa(utf8.encode(newBody));
+    let newTitle = title.trim();
+
+    if (newTitle === '') {
+      newTitle = 'Безымянная Статья';
+    }
+
     const newBody = btoa(utf8.encode(body));
     return new Promise<OkPacket>((resolve, reject) => {
-      dbQuery(`UPDATE articles SET title = '${title}', body = '${newBody}' WHERE id = ${id};`, (err: any, result: any) => {
+      dbQuery(`UPDATE articles SET title = '${newTitle}', body = '${newBody}' WHERE id = ${id};`, (err: any, result: any) => {
         if (err) {
           reject(err);
         } else {
@@ -103,7 +104,6 @@ export default class ArticlesTable {
       title = 'Безымянная Статья';
     }
 
-    // let newBody = body.replaceAll('\\n', '\\\\n');
     const newBody = btoa(utf8.encode(body));
     return new Promise<OkPacket>((resolve, reject) => {
       dbQuery(`INSERT INTO articles (title, body) VALUES ('${title}', '${newBody}');`, (err: any, result: any) => {

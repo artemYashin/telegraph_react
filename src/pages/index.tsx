@@ -4,6 +4,7 @@ import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import Head from 'next/head';
+import { Scrollbars } from 'react-custom-scrollbars-2';
 import { useStore } from '@/store/store';
 import ArticlesList from '@/components/ArticlesList';
 import ArticleDetail from '@/components/ArticleDetail';
@@ -77,12 +78,22 @@ export default function Home() {
               : null}
 
           </Stack>
-          {selectedArticle ? <ArticleDetail
-            key={`detail${selectedArticle}`}
-            id={selectedArticle}
-            className={IndexStyles.detail}
-          /> : null}
-          
+          {selectedArticle
+            ? (
+              <Scrollbars
+                autoHideTimeout={100}
+                autoHide
+                thumbSize={150}
+                renderThumbVertical={() => (<div />)}
+              >
+                <ArticleDetail
+                  key={`detail${selectedArticle}`}
+                  id={selectedArticle}
+                  className={IndexStyles.detail}
+                />
+              </Scrollbars>
+            ) : null}
+
         </Stack>
       </Stack>
     </>

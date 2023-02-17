@@ -21,3 +21,8 @@ export type ArticleSection = {
   content: any,
   sort: number
 };
+
+export enum ArticleSectionsView {
+  EDIT = 'edit',
+  DETAIL = 'detail',
+}

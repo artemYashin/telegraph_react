@@ -1,5 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
+import axios from 'axios';
 import LoadFileButton from '../LoadFileButton';
 import ArticleSection from './ArticleSection';
 import Styles from '@/styles/ImageSection.module.css';
@@ -7,7 +8,6 @@ import Styles from '@/styles/ImageSection.module.css';
 export interface ImageSectionProps {
   content?: {
     src?: string;
-    file?: File;
   },
   addFormCollector?: (content: object) => void
 }
@@ -30,7 +30,19 @@ const ImageSection = ArticleSection((props?: ImageSectionProps) => {
   };
 
   if (props?.addFormCollector) {
-    props.addFormCollector(() => ({ src, file }));
+    props.addFormCollector(async () => (new Promise((resolve) => {
+      if (file) {
+        axios.post('/api/article/image', file, {
+          headers: {
+            'content-type': file.type,
+          },
+        }).then((res: any) => {
+          resolve({ src: res.data.src });
+        });
+      } else {
+        resolve({ src });
+      }
+    })));
   }
 
   return (

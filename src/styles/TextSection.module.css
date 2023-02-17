@@ -20,6 +20,14 @@
   padding: 0px!important;
 }
 
+.body h1, .body h2 {
+  margin-bottom: 16px!important;
+}
+
+.body p {
+  line-height: 26px!important;
+}
+
 .body blockquote {
   margin-bottom: 0px!important;
   margin-top: 0px!important;
@@ -29,11 +37,11 @@
 }
 
 .body :not(blockquote) + blockquote {
-  margin-top: 16px!important;
+  margin-top: 32px!important;
 }
 
 .body blockquote + :not(blockquote) {
-  margin-top: 16px!important;
+  margin-top: 32px!important;
 }
 
 .body p {

@@ -7,7 +7,6 @@
   box-shadow: none!important;
   border-radius: 0px!important;
   padding: 0px!important;
-  margin: 16px 0px!important ;
 }
 .accordion > div {
   min-height: 0px!important;
@@ -28,8 +27,12 @@
   padding: 16px 0px!important;
 }
 .accordion_details {
-  padding: 16px 0px!important;
-  padding-top: 48px!important;
+  padding: 8px 0px!important;
+  margin-top: -1px;
+  margin-top: 24px;
+  padding-left: 10px!important;
+  border-radius: 4px;
+  border-left: 4px solid #ddd;
 }
 .title {
   border: none!important;

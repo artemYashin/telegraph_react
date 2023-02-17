@@ -1,15 +1,18 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { ArticleSection } from '@/types/Article';
-import { SectionType } from './ArticleEditSections/ArticleSection';
+import { ArticleSection, ArticleSectionsView } from '@/types/Article';
+import { ButtonsPosition, SectionType } from './ArticleEditSections/ArticleSection';
 import Divider from './ArticleEditSections/Divider';
 import ImageSection from './ArticleEditSections/ImageSection';
+// eslint-disable-next-line import/no-cycle
 import SpoilerSection from './ArticleEditSections/SpoilerSection';
 import TextSection from './ArticleEditSections/TextSection';
+import Styles from '@/styles/ArticleSections.module.css';
 
 export interface ArticleSectionsProps {
   body?: ArticleSection[];
+  view?: ArticleSectionsView;
   bodyCollector?: Function;
+  buttonsPosition?: ButtonsPosition;
 }
 
 export default function ArticleSections(props?: ArticleSectionsProps) {
@@ -25,7 +28,6 @@ export default function ArticleSections(props?: ArticleSectionsProps) {
 
   const onAddHandler = (index: number, type: string) => {
     const tempBody = Array.from(bodyContent);
-    console.log(type);
     tempBody.splice(index + 1, 0, { type, content: {}, sort: sortCounter });
     setBodyContent(tempBody);
     setSortCounter((prev) => prev + 1);
@@ -35,45 +37,27 @@ export default function ArticleSections(props?: ArticleSectionsProps) {
     formCollectors[index] = collector;
   };
 
+  // eslint-disable-next-line no-async-promise-executor
   const parseBody = async () => new Promise<ArticleSection[]>((resolve) => {
-    const imagePromises: Promise<any>[] = [];
     const tempBody = Array.from(bodyContent);
-    tempBody.forEach((el, index) => {
-      if (el.type === 'divider') return;
-
-      if (el.type === 'image') {
-        if (!el.content.src) {
-          tempBody[index].content = formCollectors[index]();
-          if (el.content.file) {
-            imagePromises.push(new Promise<any>((resolveImage) => {
-              axios.post('/api/article/image', el.content.file, {
-                headers: {
-                  'content-type': el.content.file.type,
-                },
-              }).then((res) => {
-                resolveImage({ index, src: res.data.src });
-              });
-            }));
-          }
-        }
-      } else {
-        tempBody[index].content = formCollectors[index]();
-        console.log(tempBody[index].content);
+    const promises = [];
+    for (let i = 0; i < tempBody.length; i += 1) {
+      if (tempBody[i].type === 'divider') {
+        // eslint-disable-next-line no-continue
+        continue;
       }
-    });
 
-    if (imagePromises.length !== 0) {
-      Promise.all(imagePromises).then((values) => {
-        values.forEach((value) => {
-          tempBody[value.index].content.src = value.src;
+      promises.push(new Promise<void>((resolveContent) => {
+        formCollectors[i]().then((content: object) => {
+          tempBody[i].content = content;
+          resolveContent();
         });
-        resolve(tempBody);
-      }).then(() => {
-        resolve(tempBody);
-      });
-    } else {
-      resolve(tempBody);
+      }));
     }
+
+    Promise.all(promises).then(() => {
+      resolve(tempBody);
+    });
   });
 
   const getBody = async (): Promise<ArticleSection[]> => (
@@ -87,7 +71,6 @@ export default function ArticleSections(props?: ArticleSectionsProps) {
             return tempSection;
           },
         );
-
         resolve(newBody);
       });
     })
@@ -112,6 +95,9 @@ export default function ArticleSections(props?: ArticleSectionsProps) {
   const handlers = (index: number) => ({
     deleteHandler: () => onDeleteHandler(index),
     addHandler: (type: string) => onAddHandler(index, type),
+    addFormCollector: (collector: Function) => setFormCollector(collector, index),
+    view: props?.view || ArticleSectionsView.EDIT,
+    buttonsPosition: props?.buttonsPosition || ButtonsPosition.LEFT,
   });
 
   const renderBody = () => bodyContent?.map((section, index) => {
@@ -120,8 +106,6 @@ export default function ArticleSections(props?: ArticleSectionsProps) {
         return (
           <TextSection
             {...handlers(index)}
-            view="edit"
-            addFormCollector={(collector: Function) => setFormCollector(collector, index)}
             key={String(section.sort)}
             content={section.content}
           />
@@ -130,7 +114,6 @@ export default function ArticleSections(props?: ArticleSectionsProps) {
         return (
           <Divider
             {...handlers(index)}
-            view="edit"
             key={String(section.sort)}
           />
         );
@@ -138,8 +121,6 @@ export default function ArticleSections(props?: ArticleSectionsProps) {
         return (
           <ImageSection
             {...handlers(index)}
-            view="edit"
-            addFormCollector={(collector: Function) => setFormCollector(collector, index)}
             key={String(section.sort)}
             content={section.content}
           />
@@ -148,8 +129,6 @@ export default function ArticleSections(props?: ArticleSectionsProps) {
         return (
           <SpoilerSection
             {...handlers(index)}
-            view="edit"
-            addFormCollector={(collector: Function) => setFormCollector(collector, index)}
             key={String(section.sort)}
             content={section.content}
           />
@@ -160,7 +139,7 @@ export default function ArticleSections(props?: ArticleSectionsProps) {
   });
 
   return (
-    <div>
+    <div className={Styles.sections_container}>
       {renderBody()}
     </div>
   );

@@ -1,11 +1,8 @@
 import { useQuery } from 'react-query';
 import { Stack } from '@mui/material';
 import axios, { AxiosResponse } from 'axios';
-import { Article } from '@/types/Article';
-import TextSection from './ArticleEditSections/TextSection';
-import ImageSection from './ArticleEditSections/ImageSection';
-import SpoilerSection from './ArticleEditSections/SpoilerSection';
-import Divider from './ArticleEditSections/Divider';
+import { Article, ArticleSectionsView } from '@/types/Article';
+import ArticleSections from './ArticleSections';
 
 export interface ArticleDetailProps {
   id: Number,
@@ -18,44 +15,6 @@ export default function ArticleDetail(props: ArticleDetailProps) {
     axios.get<Article>(`/api/article/${props.id.toString()}`).then((res: AxiosResponse<Article>) => res.data)
   ));
 
-  const getBody = () => data?.body?.map((section, index) => {
-    switch (section.type) {
-      case 'text':
-        return (
-          <TextSection
-            key={String(index)}
-            view="detail"
-            content={section.content}
-          />
-        );
-      case 'divider':
-        return (
-          <Divider
-            view="detail"
-            key={String(section.sort)}
-          />
-        );
-      case 'image':
-        return (
-          <ImageSection
-            key={String(index)}
-            view="detail"
-            content={section.content}
-          />
-        );
-      case 'spoiler':
-        return (
-          <SpoilerSection
-            key={String(index)}
-            view="detail"
-            content={section.content}
-          />
-        );
-      default:
-        return null;
-    }
-  });
-
   return (
     <Stack
       direction="column"
@@ -63,8 +22,8 @@ export default function ArticleDetail(props: ArticleDetailProps) {
       sx={{ flex: '1' }}
     >
       <div style={{
-        marginBottom: '1rem',
-        marginTop: '-10px',
+        marginBottom: '2rem',
+        marginTop: '52px',
         fontWeight: '500',
         fontSize: '30px',
         lineHeight: '44px',
@@ -76,9 +35,10 @@ export default function ArticleDetail(props: ArticleDetailProps) {
         fontFamily: 'Rubik',
         fontSize: '17px',
         lineHeight: '24px',
+        paddingBottom: '64px',
       }}
       >
-        { getBody() }
+        {data ? <ArticleSections body={data?.body} view={ArticleSectionsView.DETAIL} /> : 'Loading...'}
       </div>
     </Stack>
   );
