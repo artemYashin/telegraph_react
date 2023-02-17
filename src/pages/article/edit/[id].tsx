@@ -9,8 +9,9 @@ export async function getServerSideProps(context: any) {
     article.body = JSON.parse(String(article.body));
 
     article.body.map((section: ArticleSection, index: number) => {
-      section.sort = index;
-      return section;
+      const newSection = section;
+      newSection.sort = index;
+      return newSection;
     });
 
     return {

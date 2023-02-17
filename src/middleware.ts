@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwtDecode from 'jwt-decode';
+import { matchPath } from 'react-router-dom';
 import { authRoutes, adminRoutes } from './routes';
 import { User } from './types/User';
 import { AuthService } from './services/api/AuthService';
-import { matchPath } from 'react-router-dom';
 
 // eslint-disable-next-line consistent-return
 export default async function middleware(request: NextRequest) {
@@ -16,11 +16,11 @@ export default async function middleware(request: NextRequest) {
 
   if (userData && userToken) {
     const isTokenValid = await AuthService.verifyToken(userToken);
-    
-    if (adminRoutes.some(route => matchPath(route, request.nextUrl.pathname))) {
+
+    if (adminRoutes.some((route) => matchPath(route, request.nextUrl.pathname))) {
       if (!userData) {
         return NextResponse.redirect(new URL('/login', request.url));
-      } else if (!userData.admin) {
+      } if (!userData.admin) {
         return NextResponse.redirect(new URL('/', request.url));
       }
     }
@@ -35,7 +35,7 @@ export default async function middleware(request: NextRequest) {
     if (authRoutes.includes(request.nextUrl.pathname) && userData) {
       return NextResponse.redirect(new URL('/', request.url));
     }
-  } else if (adminRoutes.some(route => matchPath(route, request.nextUrl.pathname))) {
+  } else if (adminRoutes.some((route) => matchPath(route, request.nextUrl.pathname))) {
     return NextResponse.redirect(new URL('/login', request.url));
   } else if (authRoutes.includes(request.nextUrl.pathname) && userData) {
     return NextResponse.redirect(new URL('/', request.url));

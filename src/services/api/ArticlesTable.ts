@@ -76,6 +76,7 @@ export default class ArticlesTable {
         if (err) {
           reject(err);
         } else {
+          // eslint-disable-next-line no-param-reassign
           result[0].body = utf8.decode(atob(result[0].body));
           resolve(result[0]);
         }
@@ -100,13 +101,15 @@ export default class ArticlesTable {
   }
 
   static async createArticle(title: string, body: string) {
-    if (title.trim() === '') {
-      title = 'Безымянная Статья';
+    let newTitle = title.trim();
+
+    if (newTitle === '') {
+      newTitle = 'Безымянная Статья';
     }
 
     const newBody = btoa(utf8.encode(body));
     return new Promise<OkPacket>((resolve, reject) => {
-      dbQuery(`INSERT INTO articles (title, body) VALUES ('${title}', '${newBody}');`, (err: any, result: any) => {
+      dbQuery(`INSERT INTO articles (title, body) VALUES ('${newTitle}', '${newBody}');`, (err: any, result: any) => {
         if (err) {
           reject(err);
         } else {

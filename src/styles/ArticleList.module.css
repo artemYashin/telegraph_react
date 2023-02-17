@@ -48,8 +48,11 @@
     padding-right: 8px;
     z-index: -1;
   }
-  .item {
+  .admin .item {
     margin-bottom: 32px;
+  }
+  .item.selected .link {
+    font-weight: 400!important;
   }
 }
 

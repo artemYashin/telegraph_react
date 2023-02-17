@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import {
+  forwardRef, useEffect, useImperativeHandle, useRef, useState,
+} from 'react';
 import { ArticleSection, ArticleSectionsView } from '@/types/Article';
 import { ButtonsPosition, SectionType } from './ArticleEditSections/ArticleSection';
 import Divider from './ArticleEditSections/Divider';
@@ -15,10 +17,14 @@ export interface ArticleSectionsProps {
   buttonsPosition?: ButtonsPosition;
 }
 
-export default function ArticleSections(props?: ArticleSectionsProps) {
+function ArticleSections(props: ArticleSectionsProps, compRef: any) {
   const [bodyContent, setBodyContent] = useState<ArticleSection[]>(props?.body || []);
   const [sortCounter, setSortCounter] = useState(props?.body?.length || 1);
-  const [formCollectors] = useState<Function[]>([]);
+  const refs = useRef <any>([]);
+
+  const updateRefs = (index: any, element: any) => {
+    refs.current[index] = element;
+  };
 
   const onDeleteHandler = (index: number) => {
     const tempBody = Array.from(bodyContent);
@@ -26,33 +32,70 @@ export default function ArticleSections(props?: ArticleSectionsProps) {
     setBodyContent(tempBody);
   };
 
-  const onAddHandler = (index: number, type: string) => {
+  const addSection = (index: number, content: any) => {
     const tempBody = Array.from(bodyContent);
-    tempBody.splice(index + 1, 0, { type, content: {}, sort: sortCounter });
+    tempBody.splice(index, 0, content);
     setBodyContent(tempBody);
     setSortCounter((prev) => prev + 1);
   };
 
-  const setFormCollector = (collector: Function, index: number) => {
-    formCollectors[index] = collector;
+  const onAddHandler = (index: number, type: string) => {
+    if (bodyContent[index].type === SectionType.text) {
+      if (refs.current[index] && refs.current[index].slice) {
+        const section = refs.current[index];
+        const slice = section.slice();
+
+        if (slice !== false) {
+          if (slice.head === '' || slice.tail === '') {
+            if (slice.head === '') {
+              slice.head = slice.tail;
+              addSection(
+                index,
+                { type, content: {}, sort: sortCounter },
+              );
+            } else {
+              addSection(
+                index + 1,
+                { type, content: {}, sort: sortCounter },
+              );
+            }
+            section.setValue(slice.head);
+          } else {
+            section.setValue(slice.head);
+            const tempBody = Array.from(bodyContent);
+            tempBody.splice(index + 1, 0, { type, content: {}, sort: sortCounter });
+            tempBody.splice(index + 2, 0, {
+              type: bodyContent[index].type,
+              content: { text: slice.tail },
+              sort: sortCounter + 1,
+            });
+            setBodyContent(tempBody);
+            setSortCounter((prev) => prev + 2);
+          }
+
+          return;
+        }
+      }
+    }
+
+    addSection(index + 1, { type, content: {}, sort: sortCounter });
   };
 
   // eslint-disable-next-line no-async-promise-executor
   const parseBody = async () => new Promise<ArticleSection[]>((resolve) => {
     const tempBody = Array.from(bodyContent);
     const promises = [];
-    for (let i = 0; i < tempBody.length; i += 1) {
-      if (tempBody[i].type === 'divider') {
-        // eslint-disable-next-line no-continue
-        continue;
-      }
 
-      promises.push(new Promise<void>((resolveContent) => {
-        formCollectors[i]().then((content: object) => {
-          tempBody[i].content = content;
-          resolveContent();
-        });
-      }));
+    for (let i = 0; i < tempBody.length; i += 1) {
+      if (tempBody[i].type !== 'divider'
+        && (!refs.current[i] || !refs.current[i].toJson)) {
+        promises.push(new Promise<void>((resolveContent) => {
+          refs.current[i].toJson().then((content: object) => {
+            tempBody[i].content = content;
+            resolveContent();
+          });
+        }));
+      }
     }
 
     Promise.all(promises).then(() => {
@@ -76,9 +119,13 @@ export default function ArticleSections(props?: ArticleSectionsProps) {
     })
   );
 
-  if (props?.bodyCollector) {
-    props.bodyCollector(getBody);
-  }
+  useImperativeHandle(compRef, () => ({
+    toJson: async () => new Promise((resolve) => {
+      getBody().then((body: ArticleSection[]) => {
+        resolve(body);
+      });
+    }),
+  }));
 
   useEffect(() => {
     if (bodyContent.length === 0) {
@@ -90,12 +137,12 @@ export default function ArticleSections(props?: ArticleSectionsProps) {
         },
       ]);
     }
-  });
+  }, []);
 
   const handlers = (index: number) => ({
     deleteHandler: () => onDeleteHandler(index),
+    forwardedRef: (element: any) => updateRefs(index, element),
     addHandler: (type: string) => onAddHandler(index, type),
-    addFormCollector: (collector: Function) => setFormCollector(collector, index),
     view: props?.view || ArticleSectionsView.EDIT,
     buttonsPosition: props?.buttonsPosition || ButtonsPosition.LEFT,
   });
@@ -144,3 +191,5 @@ export default function ArticleSections(props?: ArticleSectionsProps) {
     </div>
   );
 }
+
+export default forwardRef(ArticleSections);

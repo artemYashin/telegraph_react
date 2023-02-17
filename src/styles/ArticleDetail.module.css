@@ -1,0 +1,13 @@
+.title {
+  margin-bottom: 2rem;
+  margin-top: 52px;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 44px;
+}
+
+@media screen and (max-width: 768px) {
+  .title {
+    margin-top: 0px!important;
+  }
+}

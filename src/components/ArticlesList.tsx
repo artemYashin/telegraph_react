@@ -10,7 +10,7 @@ import { useRouter } from 'next/dist/client/router';
 import ArticleList from '@/styles/ArticleList.module.css';
 import { Store, useStore } from '@/store/store';
 import { ArticleTitle } from '@/types/Article';
-import { useUser } from '@/services/AuthHooks';
+import { useMobile, useUser } from '@/services/AuthHooks';
 import EditIcon from '../../public/edit.svg';
 import DragDropIcon from '../../public/dragdrop.svg';
 import { ArticleOrder } from '@/services/api/ArticlesTable';
@@ -19,6 +19,7 @@ function ArticlesList() {
   const selectedArticle = useStore((state: Store) => state.selectedArticle);
   const setSelectedArticle = useStore((state: Store) => state.setSelectedArticle);
   const [articles, setArticles] = useState<ArticleTitle[]>([]);
+  const isMobile = useMobile();
 
   const router = useRouter();
   const user = useUser();
@@ -49,8 +50,16 @@ function ArticlesList() {
     setArticles(items);
   };
 
+  const handleSelectArticle = (id: number) => {
+    setSelectedArticle(id);
+
+    if (isMobile) {
+      router.push(`/article/${id}`);
+    }
+  };
+
   return (
-    <div>
+    <div className={`${user?.admin ? ArticleList.admin : ''}`}>
       {!isLoading && articles !== undefined ? (
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <Droppable droppableId="articleList">
@@ -85,8 +94,8 @@ function ArticlesList() {
                           role="button"
                           tabIndex={index + 1}
                           className={ArticleList.link}
-                          onClick={() => { setSelectedArticle(Number(article.id)); }}
-                          onKeyDown={() => { setSelectedArticle(Number(article.id)); }}
+                          onClick={() => { handleSelectArticle(Number(article.id)); }}
+                          onKeyDown={() => { handleSelectArticle(Number(article.id)); }}
                         >
                           {article.title}
 

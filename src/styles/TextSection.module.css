@@ -36,16 +36,23 @@
   padding-left: 32px!important;
 }
 
+.body blockquote:first-child {
+  margin-top: 16px!important;
+}
 .body :not(blockquote) + blockquote {
-  margin-top: 32px!important;
+  margin-top: 24px!important;
 }
 
 .body blockquote + :not(blockquote) {
-  margin-top: 32px!important;
+  margin-top: 24px!important;
 }
 
 .body p {
   line-height: 22px;
+}
+
+.body br {
+  user-select: none;
 }
 
 .body {

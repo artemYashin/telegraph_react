@@ -1,18 +1,19 @@
 import AddIcon from '@mui/icons-material/Add';
-import { useState } from 'react';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 import axios from 'axios';
 import LoadFileButton from '../LoadFileButton';
 import ArticleSection from './ArticleSection';
 import Styles from '@/styles/ImageSection.module.css';
+import { ArticleSectionsView } from '@/types/Article';
 
 export interface ImageSectionProps {
   content?: {
     src?: string;
   },
-  addFormCollector?: (content: object) => void
+  view?: string;
 }
 
-const ImageSection = ArticleSection((props?: ImageSectionProps) => {
+const ImageSection = ArticleSection(forwardRef((props: ImageSectionProps, sectionRef: any) => {
   const [file, setFile] = useState<File | null>(null);
   const [src, setSrc] = useState<string | undefined>(props?.content?.src);
 
@@ -29,8 +30,8 @@ const ImageSection = ArticleSection((props?: ImageSectionProps) => {
     reader.readAsDataURL(selectedFile);
   };
 
-  if (props?.addFormCollector) {
-    props.addFormCollector(async () => (new Promise((resolve) => {
+  useImperativeHandle(sectionRef, () => ({
+    toJson: () => new Promise((resolve) => {
       if (file) {
         axios.post('/api/article/image', file, {
           headers: {
@@ -42,13 +43,13 @@ const ImageSection = ArticleSection((props?: ImageSectionProps) => {
       } else {
         resolve({ src });
       }
-    })));
-  }
+    }),
+  }));
 
   return (
     <div>
       {
-      !src
+      !src && props?.view !== ArticleSectionsView.DETAIL
         ? (
           <LoadFileButton setSelectedFile={handleSelectImage}>
             <AddIcon sx={{ width: '15px' }} />
@@ -60,6 +61,6 @@ const ImageSection = ArticleSection((props?: ImageSectionProps) => {
       }
     </div>
   );
-});
+}));
 
 export default ImageSection;

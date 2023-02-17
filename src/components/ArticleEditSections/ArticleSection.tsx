@@ -6,6 +6,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import BorderHorizontalIcon from '@mui/icons-material/BorderHorizontal';
 import QuizIcon from '@mui/icons-material/Quiz';
 import Styles from '@/styles/ArticleSection.module.css';
+import { ArticleSectionsView } from '@/types/Article';
 
 export enum SectionType {
   text = 'text',
@@ -32,9 +33,11 @@ const articleSection = (Component: React.FC) => function ArticleSection(props: a
     }
   };
 
+  const { forwardedRef, ...rest } = props;
+
   return (
 
-    <div className={Styles.container}>
+    <div className={`${Styles.container} ${props.view !== ArticleSectionsView.DETAIL ? Styles.container_edit : null}`}>
       { props.view === 'detail' ? (<Component {...props} />)
         : (
           <>
@@ -75,7 +78,7 @@ const articleSection = (Component: React.FC) => function ArticleSection(props: a
                 <ClearIcon sx={{ width: '24px' }} />
               </Button>
             </Stack>
-            <Component {...props} />
+            <Component ref={forwardedRef} {...rest} />
           </>
         )}
     </div>

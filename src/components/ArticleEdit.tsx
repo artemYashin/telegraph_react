@@ -17,12 +17,8 @@ export interface ArticleEditProps {
 export default function ArticleEdit(props: ArticleEditProps) {
   const titleInputRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState(props.title || '');
-  let bodyCollector: any;
+  const bodyRef = useRef<any>();
   const router = useRouter();
-
-  const setBodyCollector = (callback: Promise<ArticleSection[]>): void => {
-    bodyCollector = callback;
-  };
 
   const onDeleteArticleHandler = () => {
     axios.post('/api/article/delete', { id: props.id }).then(() => {
@@ -31,22 +27,24 @@ export default function ArticleEdit(props: ArticleEditProps) {
   };
 
   const saveArticle = async (): Promise<void> => (new Promise((resolve, reject) => {
-    bodyCollector().then((bodyContent: ArticleSection[]) => {
-      const article: ArticleContent = {
-        title: titleInputRef.current?.value || '',
-        body: bodyContent,
-      };
+    if (bodyRef.current?.toJson) {
+      bodyRef.current.toJson().then((bodyContent: ArticleSection[]) => {
+        const article: ArticleContent = {
+          title: titleInputRef.current?.value || '',
+          body: bodyContent,
+        };
 
-      const saveRoute = props?.id ? '/api/article/update' : '/api/article/new';
-      const data = props?.id ? { id: props.id, article } : { article };
+        const saveRoute = props?.id ? '/api/article/update' : '/api/article/new';
+        const data = props?.id ? { id: props.id, article } : { article };
 
-      axios.post(saveRoute, data).then(() => {
-        router.push('/');
-        resolve();
-      }).catch(() => {
-        reject();
+        axios.post(saveRoute, data).then(() => {
+          router.push('/');
+          resolve();
+        }).catch(() => {
+          reject();
+        });
       });
-    });
+    }
   }));
 
   const onSaveArticleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -85,7 +83,10 @@ export default function ArticleEdit(props: ArticleEditProps) {
         multiline
       />
       <Stack direction="column" gap={2} sx={{ width: '100%' }}>
-        <ArticleSections body={props.body || []} bodyCollector={setBodyCollector} />
+        <ArticleSections
+          body={props.body || []}
+          ref={bodyRef}
+        />
       </Stack>
     </Stack>
   );
