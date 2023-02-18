@@ -12,6 +12,7 @@
     "react/jsx-props-no-spreading": "off",
     "react/destructuring-assignment": "off",
     "@next/next/no-img-element": "off",
-    "linebreak-style": "off"
+    "linebreak-style": "off",
+    "react/prop-types": "off"
   }
 }

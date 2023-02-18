@@ -17,10 +17,15 @@ export interface ArticleSectionsProps {
   buttonsPosition?: ButtonsPosition;
 }
 
+export type ArticleSectionsHandle = {
+  toJson: () => Promise<ArticleSection[]>;
+  props: ArticleSectionsProps;
+};
+
 function ArticleSections(props: ArticleSectionsProps, compRef: any) {
   const [bodyContent, setBodyContent] = useState<ArticleSection[]>(props?.body || []);
   const [sortCounter, setSortCounter] = useState(props?.body?.length || 1);
-  const refs = useRef <any>([]);
+  const refs = useRef<any>([]);
 
   const updateRefs = (index: any, element: any) => {
     refs.current[index] = element;
@@ -88,7 +93,7 @@ function ArticleSections(props: ArticleSectionsProps, compRef: any) {
 
     for (let i = 0; i < tempBody.length; i += 1) {
       if (tempBody[i].type !== 'divider'
-        && (!refs.current[i] || !refs.current[i].toJson)) {
+        && refs.current[i]?.toJson) {
         promises.push(new Promise<void>((resolveContent) => {
           refs.current[i].toJson().then((content: object) => {
             tempBody[i].content = content;
@@ -139,7 +144,7 @@ function ArticleSections(props: ArticleSectionsProps, compRef: any) {
     }
   }, []);
 
-  const handlers = (index: number) => ({
+  const mutualProps = (index: number) => ({
     deleteHandler: () => onDeleteHandler(index),
     forwardedRef: (element: any) => updateRefs(index, element),
     addHandler: (type: string) => onAddHandler(index, type),
@@ -152,7 +157,7 @@ function ArticleSections(props: ArticleSectionsProps, compRef: any) {
       case SectionType.text:
         return (
           <TextSection
-            {...handlers(index)}
+            {...mutualProps(index)}
             key={String(section.sort)}
             content={section.content}
           />
@@ -160,14 +165,14 @@ function ArticleSections(props: ArticleSectionsProps, compRef: any) {
       case SectionType.divider:
         return (
           <Divider
-            {...handlers(index)}
+            {...mutualProps(index)}
             key={String(section.sort)}
           />
         );
       case SectionType.image:
         return (
           <ImageSection
-            {...handlers(index)}
+            {...mutualProps(index)}
             key={String(section.sort)}
             content={section.content}
           />
@@ -175,7 +180,7 @@ function ArticleSections(props: ArticleSectionsProps, compRef: any) {
       case SectionType.spoiler:
         return (
           <SpoilerSection
-            {...handlers(index)}
+            {...mutualProps(index)}
             key={String(section.sort)}
             content={section.content}
           />
@@ -192,4 +197,4 @@ function ArticleSections(props: ArticleSectionsProps, compRef: any) {
   );
 }
 
-export default forwardRef(ArticleSections);
+export default forwardRef<ArticleSectionsHandle, ArticleSectionsProps>(ArticleSections);

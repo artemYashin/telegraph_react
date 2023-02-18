@@ -6,12 +6,19 @@ import ArticleSection from './ArticleSection';
 import Styles from '@/styles/ImageSection.module.css';
 import { ArticleSectionsView } from '@/types/Article';
 
+export type ImageSectionContent = {
+  src?: string;
+};
+
 export interface ImageSectionProps {
-  content?: {
-    src?: string;
-  },
+  content?: ImageSectionContent,
   view?: string;
 }
+
+export type ImageSectionHandle = {
+  toJson: () => Promise<{ src?: string }>;
+  props: ImageSectionProps;
+};
 
 const ImageSection = ArticleSection(forwardRef((props: ImageSectionProps, sectionRef: any) => {
   const [file, setFile] = useState<File | null>(null);

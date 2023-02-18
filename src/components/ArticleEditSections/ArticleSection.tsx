@@ -20,7 +20,9 @@ export enum ButtonsPosition {
   RIGHT = 'right',
 }
 
-const articleSection = (Component: React.FC) => function ArticleSection(props: any) {
+const articleSection = (Component: React.FC) => function ArticleSection(
+  props: any,
+) {
   const onDeleteHandler = () => {
     if (props?.deleteHandler) {
       props.deleteHandler();

@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
 import Styles from '@/styles/ArticleEdit.module.css';
 import { ArticleContent, ArticleSection } from '@/types/Article';
-import ArticleSections from './ArticleSections';
+import ArticleSections, { ArticleSectionsHandle } from './ArticleSections';
 
 export interface ArticleEditProps {
   id?: string,
@@ -16,8 +16,8 @@ export interface ArticleEditProps {
 
 export default function ArticleEdit(props: ArticleEditProps) {
   const titleInputRef = useRef<HTMLInputElement>(null);
-  const [title, setTitle] = useState(props.title || '');
-  const bodyRef = useRef<any>();
+  const [title, setTitle] = useState<string>(props.title || '');
+  const bodyRef = useRef<ArticleSectionsHandle | null>(null);
   const router = useRouter();
 
   const onDeleteArticleHandler = () => {
