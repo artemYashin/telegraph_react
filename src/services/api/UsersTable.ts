@@ -59,6 +59,18 @@ export default class UsersTable {
     });
   }
 
+  static async findUserByRights(rights: string): Promise<UserDb[]> {
+    return new Promise((resolve, reject) => {
+      dbQuery(`SELECT * FROM users WHERE rights = '${rights}';`, (err: any, result: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(<UserDb[]>result);
+        }
+      });
+    });
+  }
+
   static async findUser(password: string): Promise<UserDb[]> {
     const passwordHash = await AuthService.hashPassword(password);
     return new Promise((resolve, reject) => {

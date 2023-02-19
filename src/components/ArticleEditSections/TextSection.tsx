@@ -16,10 +16,10 @@ export interface TextSectionProps {
   view?: string;
 }
 
-export type TextSectionHandle = {
+export interface TextSectionHandle {
   slice: () => { head: string, tail: string } | false;
   toJson: () => Promise<TextSectionContent>;
-};
+}
 
 export interface ReactQuillDynamicProps {
   forwardedRef: any;
