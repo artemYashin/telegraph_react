@@ -29,8 +29,8 @@ export default async function Setup() {
     UsersTable.changePassword('admin', 'admin');
     UsersTable.changePassword('user', 'user');
   });
-  await SettingsTable.findSetting('user_password_state').then((setting) => {
-    if (Settings.length === 0) {
+  await SettingsTable.findSetting('user_password_state').then((setting: any) => {
+    if (setting.length === 0) {
       SettingsTable.changeSetting({ name: 'user_password_state', value: 'yes' });
     }
   }).catch(() => {
