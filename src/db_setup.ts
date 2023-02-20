@@ -5,7 +5,6 @@ import UsersTable from './services/api/UsersTable';
 import SettingsTable from './services/api/SettingsTable';
 import ArticlesTable from './services/api/ArticlesTable';
 import dbQuery from './Database';
-import Settings from './pages/settings';
 
 export default async function Setup() {
   await (new Promise<void>((resolve) => {
