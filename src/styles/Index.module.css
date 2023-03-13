@@ -9,17 +9,6 @@
   max-height: 100%;
 }
 
-.watermark {
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
-  z-index: 99;
-  user-select: none;
-  pointer-events: none;
-}
-
 .detail {
   max-height: 100%;
   overflow-x: hidden!important;

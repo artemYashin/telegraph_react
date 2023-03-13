@@ -27,6 +27,8 @@ export async function getServerSideProps(context: any) {
     await SettingsTable.findSetting('watermark_size').then((res: any) => {
       ssr.props.watermark.size = res.value as number;
     }).catch(() => 1.0);
+  } else {
+    ssr.props.watermark = { state: false };
   }
 
   return ssr;
@@ -56,16 +58,6 @@ export default function Home(props: any) {
       <Head>
         <title>Главная</title>
       </Head>
-      {props.watermark?.state ? (
-        <div
-          className={IndexStyles.watermark}
-          style={{
-            backgroundImage: 'url(watermark.png)',
-            backgroundSize: `${props.watermark.size * 100}px`,
-            opacity: `${props.watermark.opacity}`,
-          }}
-        />
-      ) : null}
       <Stack direction="column" justifyContent="center" alignItems="center" className={IndexStyles.rootContainer}>
         <Stack direction="row" className={IndexStyles.container} gap={16}>
           <Stack
@@ -108,6 +100,7 @@ export default function Home(props: any) {
               <ArticleDetail
                 key={`detail${selectedArticle}`}
                 id={selectedArticle}
+                watermark={props.watermark}
                 className={IndexStyles.detail}
               />
             ) : null}
