@@ -9,6 +9,7 @@ export interface ArticleDetailProps {
   id: Number,
   children?: React.ReactNode;
   className?: string;
+  watermark?: any;
 }
 
 export default function ArticleDetail(props: ArticleDetailProps) {
@@ -24,8 +25,32 @@ export default function ArticleDetail(props: ArticleDetailProps) {
     <Stack
       direction="column"
       className={props.className}
-      sx={{ flex: '1' }}
+      sx={{
+        flex: '1',
+        position: 'relative',
+        userSelect: 'none',
+        cursor: 'default',
+        'p, span, blockquote': {
+          userSelect: 'none',
+          cursor: 'default',
+        },
+        img: {
+          userSelect: 'none',
+          cursor: 'default',
+          pointerEvents: 'none',
+        },
+      }}
     >
+      {props.watermark?.state ? (
+        <div
+          className={Styles.watermark}
+          style={{
+            backgroundImage: 'url(watermark.png)',
+            backgroundSize: `${props.watermark.size * 100}px`,
+            opacity: `${props.watermark.opacity}`,
+          }}
+        />
+      ) : null}
       <div className={Styles.title}>
         { data?.title }
       </div>
