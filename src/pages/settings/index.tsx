@@ -53,8 +53,8 @@ function Settings(props: any) {
 
   const [watermarkState, setWatermarkState] = useState<boolean>(isWatermarkRequired);
   const [watermarkSettings, setWatermarkSettings] = useState<any>({
-    opacity: props.watermarkOpacity,
-    size: props.watermarkSize,
+    opacity: Number(props.watermarkOpacity),
+    size: Number(props.watermarkSize),
   });
   const [selectedWatermark, setSelectedWatermark] = useState<File | null>(null);
   const readedWatermark = useRef<string | null>(null);
@@ -242,7 +242,7 @@ function Settings(props: any) {
                               <div
                                 className={SettingsStyle.preview}
                                 style={{
-                                  backgroundImage: `url(${readedWatermark.current ?? (isWatermarkExists ? '/watermark.png' : null)})`,
+                                  backgroundImage: `url(${readedWatermark.current ?? (isWatermarkExists ? '/api/public/watermark.png' : null)})`,
                                   opacity: watermarkSettings.opacity,
                                   minWidth: '100%',
                                   height: 140,
@@ -251,7 +251,7 @@ function Settings(props: any) {
                               />
                               <p className={SettingsStyle.label} style={{ marginTop: '10px' }}>Прозрачность</p>
                               <Slider
-                                value={watermarkSettings.opacity}
+                                defaultValue={Number(props.watermarkOpacity)}
                                 valueLabelDisplay="auto"
                                 min={0.001}
                                 max={1.0}
@@ -278,7 +278,7 @@ function Settings(props: any) {
                               />
                               <p className={SettingsStyle.label}>Размер</p>
                               <Slider
-                                value={watermarkSettings.size}
+                                defaultValue={Number(props.watermarkSize)}
                                 valueLabelDisplay="auto"
                                 min={0.1}
                                 max={4.0}

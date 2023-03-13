@@ -45,7 +45,7 @@ export default function ArticleDetail(props: ArticleDetailProps) {
         <div
           className={Styles.watermark}
           style={{
-            backgroundImage: 'url(watermark.png)',
+            backgroundImage: 'url(/api/public/watermark.png)',
             backgroundSize: `${props.watermark.size * 100}px`,
             opacity: `${props.watermark.opacity}`,
           }}
