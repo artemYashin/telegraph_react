@@ -1,6 +1,6 @@
 import {
   Button,
-  FormControl, TextField,
+  FormControl, Slider, TextField,
 } from '@mui/material';
 import { Stack } from '@mui/system';
 import {
@@ -17,23 +17,50 @@ import isFileExists from '@/services/api/isFileExists';
 
 export async function getServerSideProps() {
   const isLogoExists = await isFileExists('public/logo.png');
+  const isWatermarkExists = await isFileExists('public/watermark.png');
   const isPasswordRequired = (await SettingsTable.findSetting('user_password_state')).value;
+  const isWatermarkRequired: boolean = await SettingsTable.findSetting('watermark_state').then((res) => res.value === 'yes').catch(() => false);
+
+  const props = {
+    isPasswordRequired,
+    isLogoExists,
+    isWatermarkRequired,
+    isWatermarkExists,
+    watermarkOpacity: 1.0,
+    watermarkSize: 1.0,
+  };
+
+  if (isWatermarkRequired) {
+    await SettingsTable.findSetting('watermark_opacity').then((res: any) => {
+      props.watermarkOpacity = res.value as number;
+    }).catch(() => 1.0);
+    await SettingsTable.findSetting('watermark_size').then((res: any) => {
+      props.watermarkSize = res.value as number;
+    }).catch(() => 1.0);
+  }
 
   return {
-    props: {
-      isPasswordRequired,
-      isLogoExists,
-    },
+    props,
   };
 }
 
 function Settings(props: any) {
+  const { isPasswordRequired, isWatermarkRequired, isWatermarkExists } = props;
+
   const [passwordState, setPasswordState] = useState<string>('no');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [readedImage, setReadedImage] = useState<string | undefined>();
+
+  const [watermarkState, setWatermarkState] = useState<boolean>(isWatermarkRequired);
+  const [watermarkSettings, setWatermarkSettings] = useState<any>({
+    opacity: props.watermarkOpacity,
+    size: props.watermarkSize,
+  });
+  const [selectedWatermark, setSelectedWatermark] = useState<File | null>(null);
+  const readedWatermark = useRef<string | null>(null);
+
   const userPasswordRef = useRef<HTMLInputElement>(null);
   const adminPasswordRef = useRef<HTMLInputElement>(null);
-  const { isPasswordRequired } = props;
 
   useEffect(() => {
     if (isPasswordRequired) {
@@ -42,6 +69,19 @@ function Settings(props: any) {
   }, []);
 
   const router = useRouter();
+
+  const handleWatermarkChange = (image: File) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (reader.result) {
+        readedWatermark.current = reader.result as string;
+        setSelectedWatermark(image);
+      }
+    };
+
+    reader.readAsDataURL(image);
+  };
 
   const handleImageChange = (image: File) => {
     const reader = new FileReader();
@@ -60,6 +100,10 @@ function Settings(props: any) {
     setPasswordState((event.target as HTMLButtonElement).getAttribute('value') as string);
   };
 
+  const handleWatermarkRadio = (event: MouseEvent<HTMLButtonElement>) => {
+    setWatermarkState((event.target as HTMLButtonElement).getAttribute('value') === 'yes');
+  };
+
   const handleHomeButton = () => {
     router.push('/');
   };
@@ -67,12 +111,10 @@ function Settings(props: any) {
   const formSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    const settingsToSave: any = {};
+
     if (isPasswordRequired !== passwordState) {
-      axios.post('/api/settings/save', {
-        passwordState,
-      }).then(() => {
-        router.push('/');
-      });
+      settingsToSave.passwordState = passwordState;
     }
 
     if (userPasswordRef.current && userPasswordRef.current.value) {
@@ -89,6 +131,31 @@ function Settings(props: any) {
         rights: 'admin',
         password: adminPasswordRef.current.value,
       }).then(() => {
+        router.push('/');
+      });
+    }
+
+    if (watermarkState !== props.isWatermarkRequired
+    || watermarkSettings.size !== props.watermarkSize
+    || watermarkSettings.opacity !== props.watermarkOpacity) {
+      if (selectedWatermark) {
+        axios.post('/api/settings/watermark', selectedWatermark, {
+          headers: {
+            'content-type': selectedWatermark.type,
+          },
+        }).then(() => {
+          window.location.href = '/';
+        });
+      }
+
+      if (selectedWatermark || isWatermarkExists) {
+        settingsToSave.watermark = watermarkSettings;
+        settingsToSave.watermark.state = watermarkState ? 'yes' : 'no';
+      }
+    }
+
+    if (Object.keys(settingsToSave).length > 0) {
+      axios.post('/api/settings/save', settingsToSave).then(() => {
         router.push('/');
       });
     }
@@ -153,6 +220,100 @@ function Settings(props: any) {
                 <AddIcon sx={{ width: '15px' }} />
                 Выбрать файл
               </LoadFileButton>
+            </Stack>
+            <Stack direction="column" className={SettingsStyle.input_container}>
+              <p className={SettingsStyle.label}>Водный знак</p>
+              <FormControl>
+                <Stack direction="column" className={SettingsStyle.input_container}>
+                  <Stack direction="row" justifyContent="space-between" gap="30px">
+                    <Button disableRipple className={`${SettingsStyle.password_button} ${watermarkState ? SettingsStyle.password_button_selected : null}`} value="yes" onClick={handleWatermarkRadio}>
+                      Да
+                    </Button>
+                    <Button disableRipple className={`${SettingsStyle.password_button} ${!watermarkState ? SettingsStyle.password_button_selected : null}`} value="no" onClick={handleWatermarkRadio}>
+                      Нет
+                    </Button>
+                  </Stack>
+                  { watermarkState
+                    ? (
+                      <>
+                        {readedWatermark.current || isWatermarkExists
+                          ? (
+                            <Stack direction="column">
+                              <div
+                                className={SettingsStyle.preview}
+                                style={{
+                                  backgroundImage: `url(${readedWatermark.current ?? (isWatermarkExists ? '/watermark.png' : null)})`,
+                                  opacity: watermarkSettings.opacity,
+                                  minWidth: '100%',
+                                  height: 140,
+                                  backgroundSize: `${watermarkSettings.size * 100}px`,
+                                }}
+                              />
+                              <p className={SettingsStyle.label} style={{ marginTop: '10px' }}>Прозрачность</p>
+                              <Slider
+                                value={watermarkSettings.opacity}
+                                valueLabelDisplay="auto"
+                                min={0.001}
+                                max={1.0}
+                                step={0.001}
+                                sx={{
+                                  '.MuiSlider-track': {
+                                    color: '#000',
+                                  },
+                                  '.MuiSlider-thumb': {
+                                    color: '#777',
+                                  },
+                                  '.MuiSlider-thumb:hover': {
+                                    boxShadow: '0px 0px 0px 6px rgba(119,119,119,0.2)',
+                                  },
+                                  '.MuiSlider-rail': {
+                                    color: '#ddd',
+                                  },
+                                }}
+                                onChange={(val: any) => {
+                                  setWatermarkSettings(
+                                    (prev: any) => ({ ...prev, opacity: val.target.value }),
+                                  );
+                                }}
+                              />
+                              <p className={SettingsStyle.label}>Размер</p>
+                              <Slider
+                                value={watermarkSettings.size}
+                                valueLabelDisplay="auto"
+                                min={0.1}
+                                max={4.0}
+                                step={0.05}
+                                sx={{
+                                  '.MuiSlider-track': {
+                                    color: '#000',
+                                  },
+                                  '.MuiSlider-thumb': {
+                                    color: '#777',
+                                  },
+                                  '.MuiSlider-thumb:hover': {
+                                    boxShadow: '0px 0px 0px 6px rgba(119,119,119,0.2)',
+                                  },
+                                  '.MuiSlider-rail': {
+                                    color: '#ddd',
+                                  },
+                                }}
+                                onChange={(val: any) => {
+                                  setWatermarkSettings(
+                                    (prev: any) => ({ ...prev, size: val.target.value }),
+                                  );
+                                }}
+                              />
+                            </Stack>
+                          )
+                          : null}
+                        <LoadFileButton setSelectedFile={handleWatermarkChange}>
+                          <AddIcon sx={{ width: '15px' }} />
+                          Выбрать файл
+                        </LoadFileButton>
+                      </>
+                    ) : null}
+                </Stack>
+              </FormControl>
             </Stack>
             <Button type="submit" className={SettingsStyle.saveButton}>
               Сохранить
