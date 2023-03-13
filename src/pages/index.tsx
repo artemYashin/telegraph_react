@@ -11,12 +11,28 @@ import { useLogout, useUser } from '@/services/AuthHooks';
 import IndexButton from '@/components/IndexButton';
 import IndexStyles from '@/styles/Index.module.css';
 import validateRoute from '@/services/api/ValidateRoute';
+import isFileExists from '@/services/api/isFileExists';
+import SettingsTable from '@/services/api/SettingsTable';
 
 export async function getServerSideProps(context: any) {
-  return validateRoute(context.req);
+  const ssr: any = { ...validateRoute(context.req), props: {} };
+  const isWatermarkExists = await isFileExists('public/watermark.png');
+  const isWatermarkRequired: boolean = await SettingsTable.findSetting('watermark_state').then((res) => res.value === 'yes').catch(() => false);
+
+  if (isWatermarkExists && isWatermarkRequired) {
+    ssr.props.watermark = { state: true };
+    await SettingsTable.findSetting('watermark_opacity').then((res: any) => {
+      ssr.props.watermark.opacity = res.value as number;
+    }).catch(() => 1.0);
+    await SettingsTable.findSetting('watermark_size').then((res: any) => {
+      ssr.props.watermark.size = res.value as number;
+    }).catch(() => 1.0);
+  }
+
+  return ssr;
 }
 
-export default function Home() {
+export default function Home(props: any) {
   const selectedArticle = useStore((state) => state.selectedArticle);
   const router = useRouter();
   const { logout } = useLogout();
@@ -40,6 +56,16 @@ export default function Home() {
       <Head>
         <title>Главная</title>
       </Head>
+      {props.watermark?.state ? (
+        <div
+          className={IndexStyles.watermark}
+          style={{
+            backgroundImage: 'url(watermark.png)',
+            backgroundSize: `${props.watermark.size * 100}px`,
+            opacity: `${props.watermark.opacity}`,
+          }}
+        />
+      ) : null}
       <Stack direction="column" justifyContent="center" alignItems="center" className={IndexStyles.rootContainer}>
         <Stack direction="row" className={IndexStyles.container} gap={16}>
           <Stack
