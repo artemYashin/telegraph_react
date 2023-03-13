@@ -41,16 +41,6 @@ export default function ArticleDetail(props: ArticleDetailProps) {
         },
       }}
     >
-      {props.watermark?.state ? (
-        <div
-          className={Styles.watermark}
-          style={{
-            backgroundImage: 'url(/api/public/watermark.png)',
-            backgroundSize: `${props.watermark.size * 100}px`,
-            opacity: `${props.watermark.opacity}`,
-          }}
-        />
-      ) : null}
       <div className={Styles.title}>
         { data?.title }
       </div>
@@ -61,7 +51,7 @@ export default function ArticleDetail(props: ArticleDetailProps) {
         paddingBottom: '64px',
       }}
       >
-        {data ? <ArticleSections body={data?.body} view={ArticleSectionsView.DETAIL} /> : 'Loading...'}
+        {data ? <ArticleSections watermark={props.watermark} body={data?.body} view={ArticleSectionsView.DETAIL} /> : 'Loading...'}
       </div>
     </Stack>
   );

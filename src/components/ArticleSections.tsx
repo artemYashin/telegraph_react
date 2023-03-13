@@ -15,6 +15,7 @@ export interface ArticleSectionsProps {
   view?: ArticleSectionsView;
   bodyCollector?: Function;
   buttonsPosition?: ButtonsPosition;
+  watermark?: any;
 }
 
 export type ArticleSectionsHandle = {
@@ -189,9 +190,19 @@ function ArticleSections(props: ArticleSectionsProps, compRef: any) {
         return null;
     }
   });
-
+  console.log(props);
   return (
     <div className={Styles.sections_container}>
+      {props.watermark?.state ? (
+        <div
+          className={Styles.watermark}
+          style={{
+            backgroundImage: 'url(/api/public/watermark.png)',
+            backgroundSize: `${props.watermark.size * 100}px`,
+            opacity: `${props.watermark.opacity}`,
+          }}
+        />
+      ) : null}
       {renderBody()}
     </div>
   );
